@@ -1,10 +1,8 @@
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { nanoid } from "nanoid";
 import { useDispatch, useSelector } from "react-redux";
-import { addContact } from "../../redux/contactsSlice"; 
-
+import { addContact } from "../../redux/contactsOps"; // Импортируем addContact из contactsOps.js
 import "./ContactForm.css";
 
 const validationSchema = Yup.object({
@@ -21,9 +19,9 @@ const validationSchema = Yup.object({
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts.items); 
+  const contacts = useSelector((state) => state.contacts.items); // Получаем список контактов из Redux
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const isDuplicate = contacts.some(
       (contact) =>
         contact.name.toLowerCase() === values.name.toLowerCase() ||
@@ -35,14 +33,12 @@ const ContactForm = () => {
       return;
     }
 
-    const newContact = {
-      id: nanoid(),
-      name: values.name,
-      number: values.number,
-    };
-
-    dispatch(addContact(newContact));
-    resetForm();
+    try {
+      await dispatch(addContact(values)); // Асинхронно добавляем контакт
+      resetForm(); // Сбрасываем форму после успешного добавления
+    } catch (error) {
+      console.error("Помилка при додаванні контакту:", error);
+    }
   };
 
   return (
@@ -71,6 +67,8 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
+
+
 
 
 

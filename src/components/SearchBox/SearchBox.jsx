@@ -1,38 +1,37 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeFilter, changeSearchType } from '../../redux/filtersSlice'; 
-
-import "./SearchBox.css";
+import { changeFilter } from '../../redux/filtersSlice'; // Используем changeFilter для изменения фильтра
+import './SearchBox.css';
 
 const SearchBox = () => {
-  const filter = useSelector(state => state.filters.name);
-  const searchType = useSelector(state => state.filters.searchType); 
+  const filter = useSelector((state) => state.filters.name); // Смотрим фильтр по имени
+  const searchType = useSelector((state) => state.filters.searchType); // Смотрим тип поиска
   const dispatch = useDispatch();
 
   const handleFilterChange = (e) => {
-    dispatch(changeFilter(e.target.value));
+    dispatch(changeFilter({ name: 'name', value: e.target.value })); // Обновляем фильтр по имени
   };
 
   const handleSearchTypeChange = (e) => {
-    dispatch(changeSearchType(e.target.value)); 
+    dispatch(changeFilter({ name: 'searchType', value: e.target.value })); // Обновляем тип поиска
   };
 
-  return ( 
+  return (
     <div className="divSBox">
       <label className="search-label">Пошук контакту:</label>
-      <input 
+      <input
         type="text"
         value={filter}
         onChange={handleFilterChange}
         placeholder="Пошук контакту:"
       />
       <div className="labelRadio">
-        <label >
-          <input  
+        <label>
+          <input
             type="radio"
             value="name"
             name="searchType"
-            checked={searchType === "name"}
+            checked={searchType === 'name'}
             onChange={handleSearchTypeChange}
           />
           Введіть ім'я
@@ -42,7 +41,7 @@ const SearchBox = () => {
             type="radio"
             value="number"
             name="searchType"
-            checked={searchType === "number"}
+            checked={searchType === 'number'}
             onChange={handleSearchTypeChange}
           />
           Введіть номер
@@ -53,6 +52,9 @@ const SearchBox = () => {
 };
 
 export default SearchBox;
+
+
+
 
 
 
