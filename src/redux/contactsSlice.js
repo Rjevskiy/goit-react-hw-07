@@ -1,59 +1,72 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { fetchContacts, addContact, deleteContact } from './contactsOps';
+
+const initialState = {
+  items: [],
+  loading: false,
+  error: null,
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {
-    items: [],
-    loading: false,
-    error: null,
-  },
+  initialState,
   extraReducers: (builder) => {
     builder
-      // Обработка fetchContacts
-      .addCase(fetchContacts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      // fetchContacts
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // Обработка addContact
-      .addCase(addContact.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      // addContact
       .addCase(addContact.fulfilled, (state, action) => {
         state.loading = false;
         state.items.push(action.payload);
       })
-      .addCase(addContact.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // Обработка deleteContact
-      .addCase(deleteContact.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      // deleteContact
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
         state.items = state.items.filter(
           (contact) => contact.id !== action.payload
         );
-      })
-      .addCase(deleteContact.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
+
+    builder
+      // Общие обработчики для pending и rejected
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      );
   },
 });
 
+// Селектор для получения списка контактов
+const selectContacts = (state) => state.contacts.items;
+
+// Селектор для получения текущих фильтров
+const selectFilters = (state) => state.filters;
+
+// Мемозированный селектор для фильтрации контактов
+export const selectFilteredContacts = createSelector(
+  [selectContacts, selectFilters],
+  (contacts, { name, searchType }) => {
+    return contacts.filter((contact) => {
+      const valueToSearch =
+        searchType === 'name' ? contact.name : contact.number;
+      return valueToSearch.toLowerCase().includes(name.toLowerCase());
+    });
+  }
+);
+
 export default contactsSlice.reducer;
+
+
