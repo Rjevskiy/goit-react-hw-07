@@ -1,19 +1,19 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeFilter } from '../../redux/filtersSlice'; // Используем changeFilter для изменения фильтра
+import { changeFilter } from '../../redux/filtersSlice'; 
 import './SearchBox.css';
 
 const SearchBox = () => {
-  const filter = useSelector((state) => state.filters.name); // Смотрим фильтр по имени
-  const searchType = useSelector((state) => state.filters.searchType); // Смотрим тип поиска
+  const filter = useSelector((state) => state.filters.name); 
+  const searchType = useSelector((state) => state.filters.searchType); 
   const dispatch = useDispatch();
 
   const handleFilterChange = (e) => {
-    dispatch(changeFilter({ name: 'name', value: e.target.value })); // Обновляем фильтр по имени
+    dispatch(changeFilter({ name: 'name', value: e.target.value })); 
   };
 
   const handleSearchTypeChange = (e) => {
-    dispatch(changeFilter({ name: 'searchType', value: e.target.value })); // Обновляем тип поиска
+    dispatch(changeFilter({ name: 'searchType', value: e.target.value })); 
   };
 
   return (

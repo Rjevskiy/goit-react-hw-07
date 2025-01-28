@@ -1,19 +1,23 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteContact } from '../../redux/contactsOps';
-import { selectFilteredContacts } from '../../redux/contactsSlice'; // Импортируем уже готовый селектор
+import { selectFilteredContacts } from '../../redux/contactsSlice'; 
 import Contact from '../ContactList/Contact';
 import './Contact.css';
 
 const ContactList = () => {
-  const filteredContacts = useSelector(selectFilteredContacts); // Используем селектор из contactsSlice.js
+  const filteredContacts = useSelector(selectFilteredContacts); 
   const dispatch = useDispatch();
 
-  // Обработчик удаления контакта
   const handleDelete = (id) => {
-    dispatch(deleteContact(id));
+    const contactExists = filteredContacts.find(contact => contact.id === id);
+    if (contactExists) {
+      dispatch(deleteContact(id));
+    } else {
+      alert('Контакт не знайден!');
+    }
   };
-
+  
   return (
     <div>
       <ul className="contact">

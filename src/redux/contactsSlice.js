@@ -12,17 +12,17 @@ const contactsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      // fetchContacts
+      
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      // addContact
+      
       .addCase(addContact.fulfilled, (state, action) => {
         state.loading = false;
         state.items.push(action.payload);
       })
-      // deleteContact
+      
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.loading = false;
         state.items = state.items.filter(
@@ -31,7 +31,7 @@ const contactsSlice = createSlice({
       });
 
     builder
-      // Общие обработчики для pending и rejected
+      
       .addMatcher(
         (action) => action.type.endsWith('/pending'),
         (state) => {
@@ -49,13 +49,13 @@ const contactsSlice = createSlice({
   },
 });
 
-// Селектор для получения списка контактов
+
 const selectContacts = (state) => state.contacts.items;
 
-// Селектор для получения текущих фильтров
+
 const selectFilters = (state) => state.filters;
 
-// Мемозированный селектор для фильтрации контактов
+
 export const selectFilteredContacts = createSelector(
   [selectContacts, selectFilters],
   (contacts, { name, searchType }) => {
